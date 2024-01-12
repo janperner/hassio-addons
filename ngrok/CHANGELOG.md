@@ -1,5 +1,14 @@
 ## Changes
 
+### 2.2.0
+
+- add support for securing tunnel by oauth
+- bump ngrok client to v3
+- remove deprecated config options:
+  - auth
+  - bind_tls
+
+
 ### 2.1.8
 
 - Fix S6 error fixes [#12](https://github.com/dy1io/hassio-addons/issues/12)

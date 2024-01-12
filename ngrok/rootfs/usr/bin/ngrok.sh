@@ -3,7 +3,8 @@ set -e
 bashio::log.debug "Building ngrok.yml..."
 configPath="/ngrok-config/ngrok.yml"
 mkdir -p /ngrok-config
-echo "log: stdout" > $configPath
+echo "version: 2" > $configPath
+echo "log: stdout" >> $configPath
 bashio::log.debug "Web interface port: $(bashio::addon.port 4040)"
 if bashio::var.has_value "$(bashio::addon.port 4040)"; then
   echo "web_addr: 0.0.0.0:$(bashio::addon.port 4040)" >> $configPath
@@ -40,8 +41,18 @@ for id in $(bashio::config "tunnels|keys"); do
     echo "    inspect: $inspect" >> $configPath
   fi
   auth=$(bashio::config "tunnels[${id}].auth")
-  if [[ $auth != "null" ]]; then
-    echo "    auth: $auth" >> $configPath
+  oauth=$(bashio::config "tunnels[${id}].oauth")
+  if [[ $oauth != "null" ]]; then
+    echo "    oauth:" >> $configPath
+    echo "        provider: $oauth" >> $configPath
+    echo -n "        allow_emails: [" >> $configPath
+    first="true"
+    for email in $(bashio::config "tunnels[${id}].oauth_allow_emails"); do
+      [ $first = "false" ] && echo -n "," >> $configPath
+      first="false"
+      echo -n "$email" >> $configPath
+    done
+    echo "]" >> $configPath
   fi
   host_header=$(bashio::config "tunnels[${id}].host_header")
   if [[ $host_header != "null" ]]; then
@@ -82,5 +93,6 @@ for id in $(bashio::config "tunnels|keys"); do
 done
 configfile=$(cat $configPath)
 bashio::log.debug "Config file: \n${configfile}"
-bashio::log.info "Starting ngrok..."
+version="$(ngrok --version)"
+bashio::log.info "Starting $version..."
 ngrok start --config $configPath --all

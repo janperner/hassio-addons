@@ -2,16 +2,6 @@
 
 A ngrok client for Hass.io
 
-## Deprecation Notice
-
-I originally created this addon to solve a problem with my home internet. I've
-since moved and my new provider does not suffer from the same issues. Since I
-no longer have a personal need and other commitments have taken a priority I no
-longer have the time or motivation to continue supporting this addon. This addon
-is very simple and just runs the official ngrok client, so as long as the tunnel
-options aren't changed by ngrok it should continue to function. You can get the
-latest version of the ngrok client simply by rebuilding the addon.
-
 ## About
 
 This add-on creates a ngrok tunnel over http and https. It also provides a
